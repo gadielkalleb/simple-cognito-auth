@@ -1,0 +1,19 @@
+{
+  "name": "simple-cognito-auth",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "types": "lib",
+  "scripts": {
+    "build": "tsc -p ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.0.2"
+  },
+  "dependencies": {
+    "amazon-cognito-identity-js": "^4.3.4"
+  }
+}
