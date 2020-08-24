@@ -15,6 +15,10 @@
   },
   "dependencies": {
     "amazon-cognito-identity-js": "^4.3.4"
+  },
+  "repository": {
+    "url": "https://github.com/gadielkalleb/simple-cognito-auth",
+    "type": "git"
   }
-},
+}
 
