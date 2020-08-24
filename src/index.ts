@@ -1,1 +1,3 @@
-export default './AuhtCognitoModule'
+import AuhtCognitoModule from './AuhtCognitoModule'
+
+export default AuhtCognitoModule

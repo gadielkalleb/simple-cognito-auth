@@ -1,3 +1,3 @@
-declare const _default: "./AuhtCognitoModule";
-export default _default;
+import AuhtCognitoModule from './AuhtCognitoModule';
+export default AuhtCognitoModule;
 //# sourceMappingURL=index.d.ts.map
