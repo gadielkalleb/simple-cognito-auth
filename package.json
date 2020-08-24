@@ -9,11 +9,12 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "typescript": "^4.0.2"
   },
   "dependencies": {
     "amazon-cognito-identity-js": "^4.3.4"
   }
-}
+},
+
