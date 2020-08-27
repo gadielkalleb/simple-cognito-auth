@@ -2,6 +2,7 @@ import { CognitoUser,  CognitoUserPool, AuthenticationDetails, CognitoUserAttrib
 import { IPoolData, IAuthenticationData, IAttributes, IUserCognito, ILoginResponse, IForgotPasswordResponse, IRefreshTokenResponse } from './interfaces'
 import cognitoAttributes from './cognitoAttributtes'
 
+global.fetch = require('node-fetch')
 
 class AuthCognitoModule {
   poolData: IPoolData
