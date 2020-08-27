@@ -1,4 +1,4 @@
-import { CognitoUser,  CognitoUserPool, AuthenticationDetails, CognitoUserAttribute, CognitoRefreshToken, ISignUpResult } from 'amazon-cognito-identity-js'
+import { CognitoUser,  CognitoUserPool, AuthenticationDetails, CognitoUserAttribute, CognitoRefreshToken, ISignUpResult, CognitoUserSession } from 'amazon-cognito-identity-js'
 import { IPoolData, IAuthenticationData, IAttributes, IUserCognito, ILoginResponse, IForgotPasswordResponse, IRefreshTokenResponse } from './interfaces'
 import cognitoAttributes from './cognitoAttributtes'
 
@@ -182,6 +182,54 @@ class AuthCognitoModule {
         if (err) reject(err)
         resolve(result)
       })
+    })
+  }
+
+
+  changeDefaultPassword({ username, defaultPassword, newPassword }: { username: string, defaultPassword: string, newPassword: string}): Promise<ILoginResponse> {
+    const sessionUserAttributes = {
+      userAttributes: null
+    }
+
+    const cognitoUser = AuthCognitoModule.cognitoUser(username, this.userPool)
+
+    const authenticationDetails = AuthCognitoModule
+      .authenticationDetails({
+        Username: username,
+        Password: defaultPassword
+      })
+
+    return new Promise((resolve, reject) => {
+      cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: function (result) {},
+        onFailure: function (err) {
+          console.log("err1", err)
+          reject(err)
+        },
+        newPasswordRequired: function(userAttributes, requiredAttributes) {
+
+          delete userAttributes.email_verified;
+
+          sessionUserAttributes.userAttributes = userAttributes;
+
+          cognitoUser.completeNewPasswordChallenge(newPassword, userAttributes, {
+            onSuccess: function (result) {
+              resolve({
+                accessToken: result.getAccessToken().getJwtToken(),
+                idToken: result.getIdToken().getJwtToken(),
+                refreshToken: result.getRefreshToken().getToken(),
+                payload: result.getAccessToken().payload,
+                isValid: result.isValid()
+              })
+            },
+            onFailure: function (err) {
+              reject(err)
+            },
+          })
+        }
+      })
+
+
     })
   }
 
