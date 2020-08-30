@@ -28,7 +28,9 @@ class AuthCognitoModule {
 
 
   static buildCognitoUser (attributes: IAttributes): CognitoUserAttribute[] {
-
+    if (Object.keys(attributes).includes('password')) {
+      delete attributes['password']
+    }
     const cognitoAtt = cognitoAttributes
 
     const cognitoUserAttribute = Object
@@ -43,24 +45,24 @@ class AuthCognitoModule {
     return cognitoUserAttribute
   }
 
-  signUp (user: IUserCognito, validationData: CognitoUserAttribute[] = []): Promise<ISignUpResult> {
-    const { username, password } = user
+  signUp (user: IUserCognito, usernameKey: string, validationData: CognitoUserAttribute[] = []): Promise<ISignUpResult> {
+    const { password } = user
 
     const attributeList = AuthCognitoModule.buildCognitoUser(user)
 
     return new Promise((resolve, reject) => {
-      this.userPool.signUp(username, password, attributeList, validationData,  (err, result) => {
+      this.userPool.signUp(user[usernameKey], password, attributeList, validationData,  (err, result) => {
         if (err) reject(err)
         resolve(result)
       })
     })
   }
 
-  confirmRegistration ({ username, smsCode }: { username: string, smsCode: string}): Promise<string> {
+  confirmRegistration ({ username, code }: { username: string, code: string}): Promise<string> {
     const cognitoUser = AuthCognitoModule.cognitoUser(username, this.userPool)
 
     return new Promise((resolve, reject) => {
-      cognitoUser.confirmRegistration(smsCode, true, (err, result) => {
+      cognitoUser.confirmRegistration(code, true, (err, result) => {
         if (err) reject(err)
         resolve(result)
       })
@@ -121,13 +123,13 @@ class AuthCognitoModule {
     })
   }
 
-  confirmPassword ({ username, smsCode, newPassword }: { username: string, smsCode: string, newPassword: string }): Promise<'Password confirmed!' | Error> {
+  confirmPassword ({ username, code, newPassword }: { username: string, code: string, newPassword: string }): Promise<'Password confirmed!' | Error> {
 
     const cognitoUser = AuthCognitoModule.cognitoUser(username, this.userPool)
 
     return new Promise((resolve, reject) => {
 
-      cognitoUser.confirmPassword(smsCode, newPassword, {
+      cognitoUser.confirmPassword(code, newPassword, {
         onSuccess () {
           resolve('Password confirmed!')
         },
@@ -138,14 +140,14 @@ class AuthCognitoModule {
     })
   }
 
-  forgotPassword ({ username }:{ username:string}): Promise<IForgotPasswordResponse | Error> {
+  forgotPassword ({ username }:{ username:string }): Promise<any | Error> {
 
     const cognitoUser = AuthCognitoModule.cognitoUser(username, this.userPool)
 
     return new Promise((resolve, reject) => {
       cognitoUser.forgotPassword({
         onSuccess: function (data) {
-          resolve({ data, message: 'CodeDeliveryData from forgotPassword' })
+          resolve(data)
         },
         onFailure: function (err) {
           reject(err)

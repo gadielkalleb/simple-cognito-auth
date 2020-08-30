@@ -35,7 +35,22 @@ export interface IRefreshTokenResponse {
   refreshToken: string
 }
 
+// interface IPayload   {
+//   sub: string
+//   'cognito:groups': string[]
+//   event_id: string
+//   token_use: string
+//   scope: string
+//   auth_time: number
+//   iss: string
+//   exp: number
+//   iat: number
+//   jti: string
+//   client_id: string
+//   username: any
+// }
+
 export interface ILoginResponse extends IRefreshTokenResponse {
-  [key: string]: unknown;
+  payload: any
   isValid: boolean
 }
